@@ -1,0 +1,36 @@
+app/api/balance/[address]/__tests__/route.test.ts(68,43): error TS2739: Type '{ address: string; }' is missing the following properties from type 'Promise<{ address: string; }>': then, catch, finally, [Symbol.toStringTag]
+app/api/balance/[address]/__tests__/route.test.ts(100,43): error TS2739: Type '{ address: string; }' is missing the following properties from type 'Promise<{ address: string; }>': then, catch, finally, [Symbol.toStringTag]
+app/api/balance/[address]/__tests__/route.test.ts(117,43): error TS2739: Type '{ address: string; }' is missing the following properties from type 'Promise<{ address: string; }>': then, catch, finally, [Symbol.toStringTag]
+app/api/balance/[address]/__tests__/route.test.ts(136,43): error TS2739: Type '{ address: string; }' is missing the following properties from type 'Promise<{ address: string; }>': then, catch, finally, [Symbol.toStringTag]
+app/api/balance/[address]/__tests__/route.test.ts(164,43): error TS2739: Type '{ address: string; }' is missing the following properties from type 'Promise<{ address: string; }>': then, catch, finally, [Symbol.toStringTag]
+app/api/balance/[address]/__tests__/route.test.ts(185,43): error TS2739: Type '{ address: string; }' is missing the following properties from type 'Promise<{ address: string; }>': then, catch, finally, [Symbol.toStringTag]
+app/api/balance/[address]/__tests__/route.test.ts(218,43): error TS2739: Type '{ address: string; }' is missing the following properties from type 'Promise<{ address: string; }>': then, catch, finally, [Symbol.toStringTag]
+app/api/balance/[address]/__tests__/route.test.ts(250,43): error TS2739: Type '{ address: string; }' is missing the following properties from type 'Promise<{ address: string; }>': then, catch, finally, [Symbol.toStringTag]
+components/balance/__tests__/BalanceDisplay.test.tsx(15,18): error TS2305: Module '"@testing-library/react"' has no exported member 'screen'.
+components/balance/__tests__/BalanceDisplay.test.tsx(15,26): error TS2305: Module '"@testing-library/react"' has no exported member 'fireEvent'.
+components/balance/__tests__/BalanceDisplay.test.tsx(15,37): error TS2305: Module '"@testing-library/react"' has no exported member 'waitFor'.
+components/balance/__tests__/DepositModal.test.tsx(9,18): error TS2305: Module '"@testing-library/react"' has no exported member 'screen'.
+components/balance/__tests__/DepositModal.test.tsx(9,26): error TS2305: Module '"@testing-library/react"' has no exported member 'fireEvent'.
+components/balance/__tests__/DepositModal.test.tsx(9,37): error TS2305: Module '"@testing-library/react"' has no exported member 'waitFor'.
+components/balance/__tests__/DepositModal.test.tsx(13,22): error TS2307: Cannot find module '@onflow/fcl' or its corresponding type declarations.
+components/balance/__tests__/WithdrawModal.test.tsx(9,18): error TS2305: Module '"@testing-library/react"' has no exported member 'screen'.
+components/balance/__tests__/WithdrawModal.test.tsx(9,26): error TS2305: Module '"@testing-library/react"' has no exported member 'fireEvent'.
+components/balance/__tests__/WithdrawModal.test.tsx(9,37): error TS2305: Module '"@testing-library/react"' has no exported member 'waitFor'.
+components/balance/__tests__/WithdrawModal.test.tsx(13,22): error TS2307: Cannot find module '@onflow/fcl' or its corresponding type declarations.
+lib/balance/__tests__/reconciliation.test.ts(10,22): error TS2307: Cannot find module '@onflow/fcl' or its corresponding type declarations.
+lib/balance/__tests__/reconciliation.test.ts(60,66): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(99,66): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(128,66): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(157,66): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(170,66): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(191,66): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(219,66): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(306,47): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(344,47): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(367,47): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(384,47): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(422,47): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/reconciliation.test.ts(450,47): error TS2345: Argument of type '"0xadmin123"' is not assignable to parameter of type 'boolean | undefined'.
+lib/balance/__tests__/synchronization.test.ts(10,22): error TS2307: Cannot find module '@onflow/fcl' or its corresponding type declarations.
+supabase/__tests__/balance_audit_log.test.ts(491,29): error TS2304: Cannot find name 'flowAddresses'.
+supabase/__tests__/user_balances.test.ts(319,29): error TS2304: Cannot find name 'flowAddresses'.
