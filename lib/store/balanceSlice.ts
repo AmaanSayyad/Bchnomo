@@ -35,7 +35,7 @@ export const createBalanceSlice: StateCreator<BalanceState> = (set, get) => ({
   // Initial state
   houseBalance: 0,
   demoBalance: 10000, // 10,000 demo BNB to start
-  accountType: (typeof window !== 'undefined' && localStorage.getItem('arbnomo_account_type') as 'real' | 'demo') || 'real', // Persist account type
+  accountType: (typeof window !== 'undefined' && localStorage.getItem('bchnomo_account_type') as 'real' | 'demo') || 'real', // Persist account type
   userTier: 'free',
   isLoading: false,
   error: null,
@@ -51,7 +51,7 @@ export const createBalanceSlice: StateCreator<BalanceState> = (set, get) => ({
     let network = (get() as any).network || 'BNB';
     const selectedCurrency = (get() as any).selectedCurrency;
     let currency = (network === 'SOL' && selectedCurrency) ? selectedCurrency : network;
-    if (network === 'ARB') currency = 'ETH';
+    if (network === 'BCH') currency = 'BCH';
 
     if (address && (address.endsWith('.near') || address.endsWith('.testnet') || /^[0-9a-fA-F]{64}$/.test(address))) {
       currency = 'NEAR';
@@ -132,7 +132,7 @@ export const createBalanceSlice: StateCreator<BalanceState> = (set, get) => ({
     const newType = accountType === 'real' ? 'demo' : 'real';
     set({ accountType: newType });
     if (typeof window !== 'undefined') {
-      localStorage.setItem('arbnomo_account_type', newType);
+      localStorage.setItem('bchnomo_account_type', newType);
     }
   },
 
@@ -147,7 +147,7 @@ export const createBalanceSlice: StateCreator<BalanceState> = (set, get) => ({
     let network = (get() as any).network || 'BNB';
     const selectedCurrency = (get() as any).selectedCurrency;
     let currency = (network === 'SOL' && selectedCurrency) ? selectedCurrency : network;
-    if (network === 'ARB') currency = 'ETH';
+    if (network === 'BCH') currency = 'BCH';
 
     // Override network for NEAR addresses
     if (address.endsWith('.near') || address.endsWith('.testnet') || /^[0-9a-fA-F]{64}$/.test(address)) {
@@ -207,7 +207,7 @@ export const createBalanceSlice: StateCreator<BalanceState> = (set, get) => ({
     const network = (get() as any).network || 'BNB';
     const selectedCurrency = (get() as any).selectedCurrency;
     let currency = (network === 'SOL' && selectedCurrency) ? selectedCurrency : network;
-    if (network === 'ARB') currency = 'ETH';
+    if (network === 'BCH') currency = 'BCH';
 
     try {
       set({ isLoading: true, error: null });

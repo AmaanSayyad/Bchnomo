@@ -17,7 +17,8 @@ import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useSignAndExecuteTransaction, useCurrentAccount } from '@mysten/dapp-kit';
 import { useSendTransaction, useSwitchChain, useAccount, usePublicClient } from 'wagmi';
 import { parseEther } from 'viem';
-import { getARBConfig } from '@/lib/bnb/config';
+import { getBCHConfig } from '@/lib/bnb/config';
+import { useWallet as useBCHWallet, useSignTransaction as useBCHSignTransaction } from 'bch-connect';
 
 interface DepositModalProps {
   isOpen: boolean;
@@ -52,12 +53,16 @@ export const DepositModal: React.FC<DepositModalProps> = ({
   const { chainId: activeChainId } = useAccount();
   const publicClient = usePublicClient();
 
+  // BCH Hooks
+  const { isConnected: isBCHConnected } = useBCHWallet();
+  const { signTransaction: signBCHTransaction } = useBCHSignTransaction();
+
   const { depositFunds, network, walletBalance, refreshWalletBalance, address } = useOverflowStore();
   const toast = useToast();
 
   const selectedCurrency = useOverflowStore(state => state.selectedCurrency);
-  const currencySymbol = network === 'SUI' ? 'USDC' : network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'ARB' ? 'ETH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
-  const networkName = network === 'SUI' ? 'Sui Network' : network === 'SOL' ? 'Solana' : network === 'ARB' ? 'Arbitrum Sepolia' : network === 'XLM' ? 'Stellar' : network === 'XTZ' ? 'Tezos' : network === 'NEAR' ? 'NEAR Protocol' : 'BNB Chain';
+  const currencySymbol = network === 'SUI' ? 'USDC' : network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'BCH' ? 'ETH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
+  const networkName = network === 'SUI' ? 'Sui Network' : network === 'SOL' ? 'Solana' : network === 'BCH' ? 'BCH Testnet' : network === 'XLM' ? 'Stellar' : network === 'XTZ' ? 'Tezos' : network === 'NEAR' ? 'NEAR Protocol' : 'BNB Chain';
 
   // Quick select amounts
   const quickAmounts = network === 'SUI' ? [1, 5, 10, 25] : [0.1, 0.5, 1, 5];
@@ -171,7 +176,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 
         const rpcUrl = process.env.NEXT_PUBLIC_TEZOS_RPC_URL || 'https://rpc.tzkt.io/mainnet';
         const wallet = new BeaconWallet({
-          name: "Arbnomo",
+          name: "Bchnomo",
           preferredNode: rpcUrl,
           network: {
             type: NetworkType.MAINNET,
@@ -227,34 +232,46 @@ export const DepositModal: React.FC<DepositModalProps> = ({
         const { signedTxXdr } = await kit.signTransaction(transaction.toXDR());
         const result = await server.submitTransaction(TransactionBuilder.fromXDR(signedTxXdr, Networks.PUBLIC));
         txHash = (result as any).hash || (result as any).id || signedTxXdr.slice(0, 16);
-      } else {
-        // ARB (EVM via Wagmi)
-        const arbConfig = getARBConfig();
-        if (!arbConfig.treasuryAddress) throw new Error('Treasury address not configured');
+      } else if (network === 'BCH') {
+        const { getNativeBCHConfig } = await import('@/lib/bch/config');
+        const bchConfig = getNativeBCHConfig();
+        if (!bchConfig.treasuryAddress) throw new Error('Native BCH Treasury address not configured');
 
-        if (activeChainId !== arbConfig.chainId && switchChainAsync) {
-          toast.info('Switching to Arbitrum Sepolia...');
-          try {
-            await switchChainAsync({ chainId: arbConfig.chainId });
-          } catch (err: any) {
-            if (err.message.includes('User rejected')) {
-              throw new Error('Please allow network switch in your wallet.');
+        if (isBCHConnected) {
+          // WalletConnect (Trust Wallet, etc.)
+          const { Wallet } = await import('mainnet-js');
+          toast.info('Building transaction for WalletConnect...');
+
+          const wallet = await Wallet.watchOnly(address);
+          // Build unsigned transaction hex
+          const buildResp = await wallet.send(
+            [{ cashaddr: bchConfig.treasuryAddress, value: depositAmount, unit: 'bch' }],
+            { buildUnsigned: true }
+          );
+
+          if (!buildResp.unsignedTransaction) throw new Error('Failed to build unsigned transaction');
+
+          toast.info('Please confirm the transaction in your mobile wallet...');
+
+          // signTransaction from bch-connect (WalletConnect)
+          // it also broadcasts by default
+          const signResp = await signBCHTransaction({
+            txRequest: {
+              transaction: buildResp.unsignedTransaction,
+              sourceOutputs: buildResp.sourceOutputs as any,
+              broadcast: true
             }
-          }
+          });
+
+          if (!signResp?.signedTransactionHash) throw new Error('Transaction rejected or failed');
+          txHash = signResp.signedTransactionHash;
+
+        } else {
+          throw new Error('Please connect with Trust Wallet to deposit BCH');
         }
-
-        const gasPrice = await publicClient?.getGasPrice();
-        // Add 50% buffer to gas price to handle rapid block changes on Arbitrum Sepolia
-        const adjustedGasPrice = gasPrice ? (gasPrice * BigInt(150)) / BigInt(100) : undefined;
-
-        toast.info('Please confirm the transaction in your wallet...');
-        const hash = await sendTransactionAsync({
-          to: getAddress(arbConfig.treasuryAddress),
-          value: parseEther(depositAmount.toString()),
-          chainId: arbConfig.chainId,
-          gasPrice: adjustedGasPrice,
-        });
-        txHash = hash;
+      } else {
+        // Default (EVM/Other)
+        throw new Error('Unsupported network for deposit');
       }
 
       toast.info('Transaction submitted. Waiting for confirmation...');
@@ -300,8 +317,8 @@ export const DepositModal: React.FC<DepositModalProps> = ({
           <p className="text-[#00f5ff] text-xl font-bold font-mono flex items-center gap-2">
             {network === 'SUI' && <img src="/usd-coin-usdc-logo.png" alt="USDC" className="w-5 h-5" />}
             {network === 'XTZ' && <img src="/logos/tezos-xtz-logo.png" alt="XTZ" className="w-5 h-5" />}
-            {network === 'ARB' && <img src="/logos/ethereum-eth-logo.png" alt="ETH" className="w-5 h-5" />}
-            {currencySymbol === 'ARB' ? <img src="/overflowlogo.png" alt="ARB" className="w-5 h-5" /> : (network === 'SOL' && <img src="/logos/solana-sol-logo.png" alt="SOL" className="w-5 h-5" />)}
+            {network === 'BCH' && <img src="/logos/bitcoin-cash-bch-logo.png" alt="BCH" className="w-5 h-5" />}
+            {currencySymbol === 'BCH' ? <img src="/logos/bitcoin-cash-bch-logo.png" alt="BCH" className="w-5 h-5" /> : (network === 'SOL' && <img src="/logos/solana-sol-logo.png" alt="SOL" className="w-5 h-5" />)}
             {network === 'XLM' && <img src="/logos/stellar-xlm-logo.png" alt="XLM" className="w-5 h-5" />}
             {network === 'NEAR' && <img src="/logos/near-logo.svg" alt="NEAR" className="w-5 h-5" />}
             {walletBalance.toFixed(4)} {currencySymbol}

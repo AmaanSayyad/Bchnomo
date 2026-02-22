@@ -28,8 +28,8 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
   const toast = useToast();
 
   const selectedCurrency = useOverflowStore(state => state.selectedCurrency);
-  const currencySymbol = network === 'SUI' ? 'USDC' : network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'ARB' ? 'ETH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
-  const networkName = network === 'SUI' ? 'Sui Network' : network === 'SOL' ? 'Solana' : network === 'ARB' ? 'Arbitrum Sepolia' : network === 'XLM' ? 'Stellar' : network === 'XTZ' ? 'Tezos' : network === 'NEAR' ? 'NEAR Protocol' : 'BNB Chain';
+  const currencySymbol = network === 'SUI' ? 'USDC' : network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'BCH' ? 'BCH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
+  const networkName = network === 'SUI' ? 'Sui Network' : network === 'SOL' ? 'Solana' : network === 'BCH' ? 'Bitcoin Cash (Chipnet)' : network === 'XLM' ? 'Stellar' : network === 'XTZ' ? 'Tezos' : network === 'NEAR' ? 'NEAR Protocol' : 'BNB Chain';
 
   // Reset state when modal opens/closes
   useEffect(() => {
@@ -138,8 +138,8 @@ export const WithdrawModal: React.FC<WithdrawModalProps> = ({
           <p className="text-[#FF006E] text-xl font-bold font-mono flex items-center gap-2">
             {network === 'SUI' && <img src="/usd-coin-usdc-logo.png" alt="USDC" className="w-5 h-5" />}
             {network === 'XTZ' && <img src="/logos/tezos-xtz-logo.png" alt="XTZ" className="w-5 h-5" />}
-            {network === 'ARB' && <img src="/logos/ethereum-eth-logo.png" alt="ETH" className="w-5 h-5" />}
-            {currencySymbol === 'ARB' ? <img src="/overflowlogo.png" alt="ARB" className="w-5 h-5" /> : (network === 'SOL' && <img src="/logos/solana-sol-logo.png" alt="SOL" className="w-5 h-5" />)}
+            {network === 'BCH' && <img src="/logos/bitcoin-cash-bch-logo.png" alt="BCH" className="w-5 h-5" />}
+            {currencySymbol === 'BCH' ? <img src="/logos/bitcoin-cash-bch-logo.png" alt="BCH" className="w-5 h-5" /> : (network === 'SOL' && <img src="/logos/solana-sol-logo.png" alt="SOL" className="w-5 h-5" />)}
             {network === 'XLM' && <img src="/logos/stellar-xlm-logo.png" alt="XLM" className="w-5 h-5" />}
             {network === 'NEAR' && <img src="/logos/near-logo.svg" alt="NEAR" className="w-5 h-5" />}
             {houseBalance.toFixed(4)} {currencySymbol}

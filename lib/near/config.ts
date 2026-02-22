@@ -8,5 +8,5 @@ export const NEAR_CONFIG = {
     headers: {}
 };
 
-export const ARBNOMO_NEAR_TREASURY = process.env.NEXT_PUBLIC_NEAR_TREASURY_ADDRESS || "arbnomo.near";
-export const NEAR_CONTRACT_ID = process.env.NEXT_PUBLIC_NEAR_CONTRACT_ID || process.env.NEXT_PUBLIC_NEAR_TREASURY_ADDRESS || "arbnomo.near";
+export const BCHNOMO_NEAR_TREASURY = process.env.NEXT_PUBLIC_NEAR_TREASURY_ADDRESS || "bchnomo.near";
+export const NEAR_CONTRACT_ID = process.env.NEXT_PUBLIC_NEAR_CONTRACT_ID || process.env.NEXT_PUBLIC_NEAR_TREASURY_ADDRESS || "bchnomo.near";

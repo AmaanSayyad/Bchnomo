@@ -14,8 +14,8 @@ export interface ProfileState {
 }
 
 export const createProfileSlice: StateCreator<ProfileState> = (set, get) => ({
-    username: (typeof window !== 'undefined' && localStorage.getItem('arbnomo_username')) || null,
-    accessCode: (typeof window !== 'undefined' && localStorage.getItem('arbnomo_access_code')) || null,
+    username: (typeof window !== 'undefined' && localStorage.getItem('bchnomo_username')) || null,
+    accessCode: (typeof window !== 'undefined' && localStorage.getItem('bchnomo_access_code')) || null,
     isUpdatingUsername: false,
     recentTrades: [],
     isLoadingTrades: false,
@@ -35,8 +35,8 @@ export const createProfileSlice: StateCreator<ProfileState> = (set, get) => ({
                     accessCode: data.access_code ?? ''
                 });
                 if (typeof window !== 'undefined') {
-                    if (data.username) localStorage.setItem('arbnomo_username', data.username);
-                    if (data.access_code) localStorage.setItem('arbnomo_access_code', data.access_code);
+                    if (data.username) localStorage.setItem('bchnomo_username', data.username);
+                    if (data.access_code) localStorage.setItem('bchnomo_access_code', data.access_code);
                 }
             } else {
                 set({ accessCode: '' });
@@ -89,6 +89,7 @@ export const createProfileSlice: StateCreator<ProfileState> = (set, get) => ({
                 .from('bet_history')
                 .select('*')
                 .eq('wallet_address', address.toLowerCase())
+                .eq('network', 'BCH')
                 .order('resolved_at', { ascending: false })
                 .limit(10);
 

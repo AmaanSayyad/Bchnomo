@@ -15,11 +15,11 @@ export async function GET(request: NextRequest) {
 
         // Use a raw SQL query via a Supabase RPC or manual aggregation
         // We'll do it with a simple select + client-side aggregation for flexibility
-        // Only fetch ARB network games
+        // Only fetch BCH network games
         const { data, error } = await supabase
             .from('bet_history')
             .select('wallet_address, amount, payout, won, network')
-            .eq('network', 'ARB');
+            .eq('network', 'BCH');
 
         if (error) {
             console.error('Supabase leaderboard error:', error);

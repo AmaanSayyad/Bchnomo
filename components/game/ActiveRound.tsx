@@ -10,7 +10,7 @@ export const ActiveRound: React.FC = () => {
   const currentPrice = useStore((state) => state.currentPrice);
   const [now, setNow] = useState(Date.now());
   const { network, selectedCurrency } = useOverflowStore();
-  const currencySymbol = network === 'SUI' ? 'USDC' : network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'ARB' ? 'ETH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
+  const currencySymbol = network === 'SUI' ? 'USDC' : network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'BCH' ? 'ETH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
 
   // Update timer every 100ms
   useEffect(() => {

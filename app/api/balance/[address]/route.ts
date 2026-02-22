@@ -24,7 +24,7 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const currency = searchParams.get('currency') || 'BNB';
 
-    // Validate address (Arbitrum Sepolia EVM and legacy formats)
+    // Validate address (BCH Testnet EVM and legacy formats)
     let isValid = false;
 
     // Check if it's a valid EVM address (BNB)
@@ -57,7 +57,7 @@ export async function GET(
 
     if (!isValid) {
       return NextResponse.json(
-        { error: 'Invalid wallet address format. Arbitrum Sepolia (EVM) address required.' },
+        { error: 'Invalid wallet address format. BCH Testnet (EVM) address required.' },
         { status: 400 }
       );
     }

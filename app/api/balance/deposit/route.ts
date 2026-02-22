@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate address (Arbitrum Sepolia EVM only)
+    // Validate address (BCH Testnet EVM only)
     let isValid = false;
 
     // Check if it's a valid EVM address
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       // Check if it's a valid Tezos address
       isValid = true;
     } else {
-      // Check if it's a valid EVM address (Arbitrum Sepolia)
+      // Check if it's a valid EVM address (BCH Testnet)
       try {
         const { PublicKey } = await import('@solana/web3.js');
         const pk = new PublicKey(userAddress);
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     if (!isValid) {
       return NextResponse.json(
-        { error: 'Invalid wallet address format. Arbitrum Sepolia (EVM) address required.' },
+        { error: 'Invalid wallet address format. BCH Testnet (EVM) address required.' },
         { status: 400 }
       );
     }

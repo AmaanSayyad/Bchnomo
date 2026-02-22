@@ -50,11 +50,11 @@ export default function LeaderboardPage() {
             case 'SOL': return '/logos/solana-sol-logo.png';
             case 'SUI': return '/logos/sui-logo.png';
             case 'BNB': return '/logos/bnb-bnb-logo.png';
-            case 'ARB': return '/arbitrum-arb-logo.png';
+            case 'BCH': return '/logos/bitcoin-cash-bch-logo.png';
             case 'XLM': return '/logos/stellar-xlm-logo.png';
             case 'XTZ': return '/logos/tezos-xtz-logo.png';
             case 'NEAR': return '/logos/near-logo.svg';
-            default: return '/arbitrum-arb-logo.png';
+            default: return '/logos/bitcoin-cash-bch-logo.png';
         }
     };
 
@@ -63,7 +63,7 @@ export default function LeaderboardPage() {
             case 'SOL': return 'SOL';
             case 'SUI': return 'USDC';
             case 'BNB': return 'BNB';
-            case 'ARB': return 'ETH';
+            case 'BCH': return 'ETH';
             case 'XLM': return 'XLM';
             case 'XTZ': return 'XTZ';
             case 'NEAR': return 'NEAR';
@@ -115,7 +115,7 @@ export default function LeaderboardPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
                             className="text-white/30 text-sm font-bold uppercase tracking-widest leading-relaxed max-w-xl">
-                            The elite traders of the Arbnomo protocol. Ranked by net profit on Arbitrum Sepolia.
+                            The elite traders of the Bchnomo protocol. Ranked by net profit on BCH Testnet.
                         </motion.p>
                     </div>
 

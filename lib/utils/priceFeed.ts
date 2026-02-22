@@ -1,7 +1,7 @@
 /**
  * Pyth Network Price Feed Service
  * Fetches real-time crypto price data from Pyth Network
- * Supports: BTC, ETH, SOL, ARB, and more
+ * Supports: BTC, BCH, SOL, BCH, and more
  */
 
 import { HermesClient } from '@pythnetwork/hermes-client';
@@ -21,7 +21,6 @@ export const PRICE_FEED_IDS = {
   XLM: '0xb7a8eba68a997cd0210c2e1e4ee811ad2d174b3611c22d9ebf16f4cb7e9ba850',
   XTZ: '0x0affd4b8ad136a21d79bc82450a325ee12ff55a235abc242666e423b8bcffd03',
   NEAR: '0xc415de8d2eba7db216527dff4b60e8f3a5311c740dadb233e13e12547e226750',
-  ARB: '0x3fa4252848f9f0a1480be62745a4629d9eb1322aebab8a791e344b3b9c1adcf5',
   // Metals
   GOLD: '0x765d2ba906dbc32ca17cc11f5310a89e9ee1f6420508c63861f2f8ba4ee34bb2',
   SILVER: '0xf2fb02c32b055c805e7238d628e5e9dadef274376114eb1f012337cabe93871e',
@@ -210,7 +209,7 @@ export class MockPriceFeed {
 
   constructor(asset: AssetType = 'BTC', basePrice?: number, volatility: number = 0.001, trend: number = 0) {
     this.asset = asset;
-    const defaults: Record<string, number> = { BTC: 50000, BNB: 600, ARB: 1.5 };
+    const defaults: Record<string, number> = { BTC: 50000, BNB: 600, BCH: 1.5 };
     this.basePrice = basePrice || defaults[asset] || 1;
     this.volatility = volatility;
     this.trend = trend;

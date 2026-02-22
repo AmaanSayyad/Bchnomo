@@ -44,7 +44,7 @@ const TOUR_STEPS: TourStep[] = [
     {
         target: '[data-tour="deposit-section"]',
         title: 'Quick Deposit',
-        content: 'Easily deposit ETH on Arbitrum Sepolia to start trading. Transactions are instant and secure.',
+        content: 'Easily deposit BCH on BCH Testnet to start trading. Transactions are instant and secure.',
         position: 'top'
     }
 ];
@@ -63,7 +63,7 @@ export const QuickTour: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
         ...(isConnected ? [] : [{
             target: '[data-tour="connect-button"]',
             title: 'Welcome! Connect First',
-            content: 'Start by connecting your wallet on Arbitrum Sepolia for a seamless trading experience.',
+            content: 'Start by connecting your wallet on BCH Testnet for a seamless trading experience.',
             position: 'bottom' as const
         }]),
         {
@@ -94,7 +94,7 @@ export const QuickTour: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ 
             target: '[data-tour="deposit-section"]',
             title: 'Manage Your Funds',
             content: isConnected
-                ? 'Easily deposit ETH on Arbitrum Sepolia to start trading. Your house balance is updated instantly.'
+                ? 'Easily deposit BCH on BCH Testnet to start trading. Your house balance is updated instantly.'
                 : 'After connecting, you can manage your deposits and withdrawals right here.',
             position: 'top' as const
         }

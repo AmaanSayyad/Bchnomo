@@ -1,20 +1,20 @@
 /**
- * Arbitrum Sepolia Backend Client
+ * BCH Testnet Backend Client
  * Used for administrative operations like withdrawals
  */
 
 import { ethers } from 'ethers';
-import { getARBConfig } from './config';
+import { getBCHConfig } from './config';
 
 /**
  * Get the treasury wallet for backend operations
  */
 export function getTreasuryWallet(): ethers.Wallet {
-    const config = getARBConfig();
-    const secretKey = process.env.ARB_TREASURY_SECRET_KEY;
+    const config = getBCHConfig();
+    const secretKey = process.env.BCH_TREASURY_SECRET_KEY;
 
     if (!secretKey) {
-        throw new Error('ARB_TREASURY_SECRET_KEY is not configured');
+        throw new Error('BCH_TREASURY_SECRET_KEY is not configured');
     }
 
     const provider = new ethers.JsonRpcProvider(config.rpcEndpoint);
@@ -22,9 +22,9 @@ export function getTreasuryWallet(): ethers.Wallet {
 }
 
 /**
- * Transfer ETH (on Arbitrum Sepolia) from treasury to a user
+ * Transfer BCH (on BCH Testnet) from treasury to a user
  */
-export async function transferARBFromTreasury(
+export async function transferBCHFromTreasury(
     toAddress: string,
     amountETH: number
 ): Promise<string> {
@@ -43,7 +43,7 @@ export async function transferARBFromTreasury(
 
         return tx.hash;
     } catch (error) {
-        console.error('Failed to transfer ETH from treasury on Arbitrum Sepolia:', error);
+        console.error('Failed to transfer BCH from treasury on BCH Testnet:', error);
         throw error;
     }
 }

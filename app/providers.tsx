@@ -5,10 +5,10 @@ import { useOverflowStore } from '@/lib/store';
 import { ToastProvider } from '@/components/ui/ToastProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PrivyProvider, usePrivy, useWallets } from '@privy-io/react-auth';
-import { arbitrumSepolia } from 'viem/chains';
 import { WagmiProvider, useAccount } from 'wagmi';
+import { useWallet as useBCHWallet } from 'bch-connect';
 import { ConnectKitProvider } from 'connectkit';
-import { config as wagmiConfig } from '@/lib/bnb/wagmi';
+import { config as wagmiConfig, bchTestnet } from '@/lib/bnb/wagmi';
 
 // Solana Imports
 import { ConnectionProvider, WalletProvider as SolanaWalletProvider, useWallet } from '@solana/wallet-adapter-react';
@@ -24,6 +24,9 @@ import '@mysten/dapp-kit/dist/index.css';
 import { WalletConnectModal } from '@/components/wallet/WalletConnectModal';
 import { ReferralSync } from './ReferralSync';
 
+// BCH Connect
+import { BCHConnectProvider, createConfig as createBCHConfig } from 'bch-connect';
+
 // Wallet Sync component to bridge all wallet states with our Zustand store
 function WalletSync() {
   const { user, authenticated, ready: privyReady } = usePrivy();
@@ -31,6 +34,7 @@ function WalletSync() {
   const { connected: solanaConnected, publicKey: solanaPublicKey } = useWallet();
   const suiAccount = useCurrentAccount();
   const { address: wagmiAddress, isConnected: wagmiConnected } = useAccount();
+  const { address: bchAddress, isConnected: bchConnected } = useBCHWallet();
 
   const {
     address,
@@ -81,31 +85,21 @@ function WalletSync() {
       return;
     }
 
-    // 3. Check ARB (Wagmi or Privy)
-    if (preferredNetwork === 'ARB') {
-      if (wagmiConnected && wagmiAddress) {
-        if (address !== wagmiAddress) {
-          setAddress(wagmiAddress);
+    // 3. Check BCH (Native via bch-connect or fallback to mainnet-js)
+    if (preferredNetwork === 'BCH') {
+      // Priority: bch-connect (WalletConnect)
+      if (bchConnected && bchAddress) {
+        if (address !== bchAddress) {
+          setAddress(bchAddress);
           setIsConnected(true);
-          setNetwork('ARB');
+          setNetwork('BCH');
           refreshWalletBalance();
-          fetchProfile(wagmiAddress);
-          fetchBalance(wagmiAddress);
+          fetchProfile(bchAddress);
+          fetchBalance(bchAddress);
         }
         return;
       }
-      if (privyReady && authenticated && privyWallets[0]) {
-        const addr = privyWallets[0].address;
-        if (address !== addr) {
-          setAddress(addr);
-          setIsConnected(true);
-          setNetwork('ARB');
-          refreshWalletBalance();
-          fetchProfile(addr);
-          fetchBalance(addr);
-        }
-        return;
-      }
+      return;
     }
 
     // 4. Check Stellar - Logic is now handled by restoration effect above or manual connection
@@ -149,6 +143,7 @@ function WalletSync() {
       if (preferredNetwork === 'SOL' && !hasSolana) shouldClear = true;
       else if (preferredNetwork === 'SUI' && !hasSui) shouldClear = true;
       else if (preferredNetwork === 'BNB' && !hasBNB) shouldClear = true;
+      else if (preferredNetwork === 'BCH' && !bchConnected && !address) shouldClear = true;
       else if (preferredNetwork === 'XLM' && !hasStellar) shouldClear = true;
       else if (preferredNetwork === 'XTZ' && !hasTezos) shouldClear = true;
       else if (preferredNetwork === 'NEAR' && !hasNEAR) shouldClear = true;
@@ -230,37 +225,47 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <ConnectKitProvider mode="dark">
-          <PrivyProvider
-            appId={PRIVY_APP_ID}
-            config={{
-              appearance: {
-                theme: 'dark',
-                accentColor: '#A855F7',
-                showWalletLoginFirst: true,
-              },
-              supportedChains: [arbitrumSepolia],
-              defaultChain: arbitrumSepolia,
-              embeddedWallets: {
-                createOnLogin: 'users-without-wallets',
-              },
-            }}
+          <BCHConnectProvider
+            config={createBCHConfig({
+              appName: 'Bchnomo',
+              appDescription: 'Bchnomo Protocol on Native BCH',
+              appUrl: 'https://bchnomo.com',
+              appIcon: 'https://bchnomo.com/logo.png',
+              walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'dummy-id',
+            })}
           >
-            <ConnectionProvider endpoint={solanaEndpoint}>
-              <SolanaWalletProvider wallets={solanaWallets} autoConnect>
-                <WalletModalProvider>
-                  <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
-                    <WalletProvider autoConnect>
-                      <WalletSync />
-                      <ReferralSync />
-                      {children}
-                      <WalletConnectModal />
-                      <ToastProvider />
-                    </WalletProvider>
-                  </SuiClientProvider>
-                </WalletModalProvider>
-              </SolanaWalletProvider>
-            </ConnectionProvider>
-          </PrivyProvider>
+            <PrivyProvider
+              appId={PRIVY_APP_ID}
+              config={{
+                appearance: {
+                  theme: 'dark',
+                  accentColor: '#A855F7',
+                  showWalletLoginFirst: true,
+                },
+                supportedChains: [bchTestnet],
+                defaultChain: bchTestnet,
+                embeddedWallets: {
+                  createOnLogin: 'users-without-wallets',
+                },
+              }}
+            >
+              <ConnectionProvider endpoint={solanaEndpoint}>
+                <SolanaWalletProvider wallets={solanaWallets} autoConnect>
+                  <WalletModalProvider>
+                    <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
+                      <WalletProvider autoConnect>
+                        <WalletSync />
+                        <ReferralSync />
+                        {children}
+                        <WalletConnectModal />
+                        <ToastProvider />
+                      </WalletProvider>
+                    </SuiClientProvider>
+                  </WalletModalProvider>
+                </SolanaWalletProvider>
+              </ConnectionProvider>
+            </PrivyProvider>
+          </BCHConnectProvider>
         </ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

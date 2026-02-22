@@ -14,8 +14,8 @@ export interface WalletState {
   walletBalance: number;
   isConnected: boolean;
   isConnecting: boolean;
-  network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'ARB' | null;
-  preferredNetwork: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'ARB' | null;
+  network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'BCH' | null;
+  preferredNetwork: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'BCH' | null;
   selectedCurrency: string | null;
   error: string | null;
   isConnectModalOpen: boolean;
@@ -30,8 +30,8 @@ export interface WalletState {
   // Setters for wallet integration
   setAddress: (address: string | null) => void;
   setIsConnected: (connected: boolean) => void;
-  setNetwork: (network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'ARB' | null) => void;
-  setPreferredNetwork: (network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'ARB' | null) => void;
+  setNetwork: (network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'BCH' | null) => void;
+  setPreferredNetwork: (network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'BCH' | null) => void;
   setSelectedCurrency: (currency: string | null) => void;
 }
 
@@ -46,7 +46,7 @@ export const createWalletSlice: StateCreator<WalletState> = (set, get) => ({
   isConnected: false,
   isConnecting: false,
   network: null,
-  preferredNetwork: typeof window !== 'undefined' ? localStorage.getItem('solnomo_preferred_network') as 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'ARB' | null : null,
+  preferredNetwork: typeof window !== 'undefined' ? localStorage.getItem('solnomo_preferred_network') as 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'BCH' | null : null,
   selectedCurrency: null,
   error: null,
   isConnectModalOpen: false,
@@ -104,9 +104,13 @@ export const createWalletSlice: StateCreator<WalletState> = (set, get) => ({
     }
 
     try {
-      if (network === 'BNB' || network === 'ARB') {
-        const { getARBBalance } = await import('@/lib/bnb/client');
-        const bal = await getARBBalance(address);
+      if (network === 'BNB') {
+        const { getBCHBalance } = await import('@/lib/bnb/client');
+        const bal = await getBCHBalance(address);
+        set({ walletBalance: bal });
+      } else if (network === 'BCH') {
+        const { getNativeBCHBalance } = await import('@/lib/bch/client');
+        const bal = await getNativeBCHBalance(address);
         set({ walletBalance: bal });
       } else if (network === 'SOL') {
         const { getSOLBalance, getTokenBalance } = await import('@/lib/solana/client');
@@ -114,10 +118,10 @@ export const createWalletSlice: StateCreator<WalletState> = (set, get) => ({
         let bal = 0;
         if (currency === 'SOL') {
           bal = await getSOLBalance(address);
-        } else if (currency === 'ARB') {
-          // Arbnomo Token on Solana (legacy)
-          const ARB_MINT = 'Bi4NEEQhtrFdnoS9NjrXaWkQftXifh2t3RzQHSTQpump';
-          bal = await getTokenBalance(address, ARB_MINT);
+        } else if (currency === 'BCH') {
+          // Bchnomo Token on Solana (legacy)
+          const BCH_MINT = 'Bi4NEEQhtrFdnoS9NjrXaWkQftXifh2t3RzQHSTQpump';
+          bal = await getTokenBalance(address, BCH_MINT);
         }
         set({ walletBalance: bal });
       } else if (network === 'SUI') {
@@ -171,14 +175,14 @@ export const createWalletSlice: StateCreator<WalletState> = (set, get) => ({
   /**
    * Set active network (BNB, SOL, SUI, XLM, XTZ or NEAR)
    */
-  setNetwork: (network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'ARB' | null) => {
+  setNetwork: (network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'BCH' | null) => {
     set({ network });
   },
 
   /**
    * Set preferred network (manually chosen by user)
    */
-  setPreferredNetwork: (network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'ARB' | null) => {
+  setPreferredNetwork: (network: 'BNB' | 'SOL' | 'SUI' | 'XLM' | 'XTZ' | 'NEAR' | 'BCH' | null) => {
     set({ preferredNetwork: network });
     if (typeof window !== 'undefined') {
       if (network) {

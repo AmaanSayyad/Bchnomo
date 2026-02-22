@@ -80,7 +80,8 @@ export default function ProfilePage() {
 
     // Calculate trading statistics
     const stats = React.useMemo(() => {
-        const settledBets = bets.filter((bet: any) => (parseFloat(bet.endPrice) || 0) > 0 || bet.won);
+        const bchBets = bets.filter((bet: any) => bet.network === 'BCH');
+        const settledBets = bchBets.filter((bet: any) => (parseFloat(bet.endPrice) || 0) > 0 || bet.won);
         const wins = settledBets.filter((bet: any) => bet.won).length;
         const losses = settledBets.filter((bet: any) => !bet.won).length;
         const totalWagered = settledBets.reduce((sum: number, bet: any) => sum + (parseFloat(bet.amount) || 0), 0);
@@ -98,10 +99,10 @@ export default function ProfilePage() {
     const currentTierData = TIER_DATA[safeTierIndex];
     const nextTier = TIER_DATA[safeTierIndex + 1];
 
-    // Normalize referral code display: bynomo-/binomo- -> arbnomo-
+    // Normalize referral code display: bynomo-/binomo- -> bchnomo-
     const displayReferralCode = referralCode
-      ? referralCode.replace(/^bynomo-/, 'arbnomo-').replace(/^binomo-/, 'arbnomo-')
-      : null;
+        ? referralCode.replace(/^bynomo-/, 'bchnomo-').replace(/^binomo-/, 'bchnomo-')
+        : null;
 
     const [isTierModalOpen, setIsTierModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -110,13 +111,13 @@ export default function ProfilePage() {
 
     useEffect(() => {
         if (username) {
-            setNewUsername(username.replace('.arbnomo', ''));
+            setNewUsername(username.replace('.bchnomo', ''));
         }
     }, [username]);
 
     const handleUpdateUsername = async () => {
         if (!address || !newUsername) return;
-        const formattedUsername = `${newUsername.toLowerCase()}.arbnomo`;
+        const formattedUsername = `${newUsername.toLowerCase()}.bchnomo`;
         const success = await updateUsername(address, formattedUsername);
         if (success) {
             setIsEditing(false);
@@ -141,7 +142,7 @@ export default function ProfilePage() {
                 <div className="w-20 h-20 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mb-8">
                     <Wallet className="w-8 h-8 text-white/40" />
                 </div>
-                <h1 className="text-2xl font-black text-white uppercase tracking-widest mb-4">ARBNOMO Registry</h1>
+                <h1 className="text-2xl font-black text-white uppercase tracking-widest mb-4">BCHNOMO Registry</h1>
                 <p className="text-gray-500 max-w-xs mx-auto text-[10px] font-bold uppercase tracking-[0.2em] leading-relaxed mb-8">
                     Synchronization required. Please authorize your wallet to access neural trading identity.
                 </p>
@@ -306,7 +307,7 @@ export default function ProfilePage() {
                                             {copySuccess === 'Code' ? <Check className="w-4 h-4 text-emerald-400" /> : <LinkIcon className="w-4 h-4" />}
                                         </button>
                                     </div>
-                                    <button onClick={() => window.open(`https://twitter.com/intent/tweet?text=Join ARBNOMO: ${displayReferralCode}`, '_blank')} className="w-full py-4 bg-white text-black rounded-xl text-[9px] font-black uppercase tracking-[0.2em] hover:bg-gray-200 transition-all">
+                                    <button onClick={() => window.open(`https://twitter.com/intent/tweet?text=Join BCHNOMO: ${displayReferralCode}`, '_blank')} className="w-full py-4 bg-white text-black rounded-xl text-[9px] font-black uppercase tracking-[0.2em] hover:bg-gray-200 transition-all">
                                         Share Access
                                     </button>
                                 </div>

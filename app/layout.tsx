@@ -22,15 +22,15 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://arbnomo.fun'),
-  title: "Arbnomo - Trade over 300+ Crypto, Stocks, Metals and Forex with 5s-1m time-charts",
+  metadataBase: new URL('https://bchnomo.fun'),
+  title: "Bchnomo - Trade over 300+ Crypto, Stocks, Metals and Forex with 5s-1m time-charts",
   description:
-    "The first Arbitrum Sepolia on-chain binary options trading dapp. Powered by Pyth Hermes price attestations, Supabase, and x402-style payments. Oracle-bound resolution, minimal trust.",
+    "The first BCH Testnet on-chain binary options trading dapp. Powered by Pyth Hermes price attestations, Supabase, and x402-style payments. Oracle-bound resolution, minimal trust.",
   keywords: [
     "binary options",
     "crypto trading",
     "Pyth oracle",
-    "Arbitrum Sepolia",
+    "BCH Testnet",
     "ETH",
     "Web3",
     "prediction",
@@ -41,15 +41,15 @@ export const metadata: Metadata = {
     apple: "/overflowlogo.ico",
   },
   openGraph: {
-    title: "Arbnomo — Trade over 300+ Crypto, Stocks, Metals and Forex with 5s-1m time-charts",
+    title: "Bchnomo — Trade over 300+ Crypto, Stocks, Metals and Forex with 5s-1m time-charts",
     description:
-      "The first Arbitrum Sepolia on-chain binary options trading dapp. Powered by Pyth Hermes price attestations, Supabase, and x402-style payments. Oracle-bound resolution, minimal trust",
-    images: [{ url: '/overflowlogo.png', width: 512, height: 512, alt: 'Arbnomo' }],
+      "The first BCH Testnet on-chain binary options trading dapp. Powered by Pyth Hermes price attestations, Supabase, and x402-style payments. Oracle-bound resolution, minimal trust",
+    images: [{ url: '/overflowlogo.png', width: 512, height: 512, alt: 'Bchnomo' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Arbnomo — Trade over 300+ Crypto, Stocks, Metals and Forex with 5s-1m time-charts",
-    description: "Trade binary options with oracle-bound resolution and minimal trust on Arbitrum Sepolia.",
+    title: "Bchnomo — Trade over 300+ Crypto, Stocks, Metals and Forex with 5s-1m time-charts",
+    description: "Trade binary options with oracle-bound resolution and minimal trust on BCH Testnet.",
     images: ['/overflowlogo.png'],
   },
 };

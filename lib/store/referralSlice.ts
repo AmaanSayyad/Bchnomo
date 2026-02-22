@@ -65,21 +65,21 @@ export const createReferralSlice: StateCreator<ReferralState> = (set, get) => ({
 
         const shortAddr = address.slice(-4).toUpperCase();
         const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
-        const code = `arbnomo-${shortAddr}${randomStr}`;
+        const code = `bchnomo-${shortAddr}${randomStr}`;
 
         const referredByCode = get().referredBy;
         let referredByAddress = null;
 
         if (referredByCode) {
-            // Try exact code first, then legacy bynomo-/binomo- if ref came as arbnomo-
+            // Try exact code first, then legacy bynomo-/binomo- if ref came as bchnomo-
             const codesToTry = [referredByCode];
-            if (referredByCode.startsWith('arbnomo-')) {
+            if (referredByCode.startsWith('bchnomo-')) {
                 const suffix = referredByCode.slice(8);
                 codesToTry.push('bynomo-' + suffix, 'binomo-' + suffix);
             } else if (referredByCode.startsWith('binomo-')) {
-                codesToTry.push('arbnomo-' + referredByCode.slice(7));
+                codesToTry.push('bchnomo-' + referredByCode.slice(7));
             } else if (referredByCode.startsWith('bynomo-')) {
-                codesToTry.push('arbnomo-' + referredByCode.slice(7));
+                codesToTry.push('bchnomo-' + referredByCode.slice(7));
             }
             for (const code of codesToTry) {
                 const { data: refUser } = await supabase

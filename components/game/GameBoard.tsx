@@ -7,7 +7,7 @@ import { BalanceDisplay } from '@/components/balance';
 import { startPriceFeed } from '@/lib/store/gameSlice';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
-import { getARBConfig } from '@/lib/bnb/config';
+import { getBCHConfig } from '@/lib/bnb/config';
 import { getAddress, parseEther } from 'viem';
 import { ethers } from 'ethers';
 import { useToast } from '@/lib/hooks/useToast';
@@ -72,7 +72,7 @@ export const GameBoard: React.FC = () => {
   const toast = useToast();
 
   // Unified balance and currency
-  const currencySymbol = network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'SUI' ? 'USDC' : network === 'ARB' ? 'ETH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
+  const currencySymbol = network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'SUI' ? 'USDC' : network === 'BCH' ? 'ETH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
   const blitzEntryFee = 0.001;
 
   // Connection and Authorization status (access code requirement removed)
@@ -102,14 +102,14 @@ export const GameBoard: React.FC = () => {
         toast.info(`Confirming ${blitzEntryFee} SOL Blitz Entry...`);
         const signature = await sendSolanaTransaction(transaction, connection);
         console.log("Solana Blitz payment sig:", signature);
-      } else if (network === 'BNB' || network === 'ARB') {
-        const config = getARBConfig();
+      } else if (network === 'BNB' || network === 'BCH') {
+        const config = getBCHConfig();
         if (!config.treasuryAddress) {
           throw new Error("Treasury not configured");
         }
 
         if (activeChainId !== config.chainId && switchChainAsync) {
-          toast.info('Switching to Arbitrum Sepolia...');
+          toast.info('Switching to BCH Testnet...');
           try {
             await switchChainAsync({ chainId: config.chainId });
           } catch (err: any) {
@@ -122,14 +122,14 @@ export const GameBoard: React.FC = () => {
         const gasPrice = await publicClient?.getGasPrice();
         const adjustedGasPrice = gasPrice ? (gasPrice * BigInt(150)) / BigInt(100) : undefined;
 
-        toast.info(`Confirming ${blitzEntryFee} ETH Blitz Entry...`);
+        toast.info(`Confirming ${blitzEntryFee} BCH Blitz Entry...`);
         const txHash = await sendTransactionAsync({
           to: getAddress(config.treasuryAddress),
           value: parseEther(blitzEntryFee.toString()),
           chainId: config.chainId,
           gasPrice: adjustedGasPrice,
         });
-        console.log("ARB Blitz payment tx:", txHash);
+        console.log("BCH Blitz payment tx:", txHash);
       } else if (network === 'SUI') {
         if (!suiAccount) throw new Error('Sui wallet not connected');
         const { buildDepositTransaction } = await import('@/lib/sui/client');

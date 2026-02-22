@@ -19,11 +19,11 @@ export const WalletConnect: React.FC = () => {
 
   const handleDisconnect = () => {
     if (network === 'BNB') logoutPrivy();
-    else if (network === 'ARB') { disconnectWagmi(); }
+    else if (network === 'BCH') { disconnectWagmi(); }
     else if (network === 'SOL') disconnectSolana();
     else if (network === 'SUI') disconnectSui();
     else if (network === 'XLM') {
-      // No Stellar SDK disconnect (Arbitrum Sepolia only)
+      // No Stellar SDK disconnect (BCH Testnet only)
     }
     // XTZ and NEAR don't need special SDK disconnect
 
@@ -37,11 +37,11 @@ export const WalletConnect: React.FC = () => {
       case 'SOL': return '/logos/solana-sol-logo.png';
       case 'SUI': return '/logos/sui-logo.png';
       case 'BNB': return '/logos/bnb-bnb-logo.png';
-      case 'ARB': return '/arbitrum-arb-logo.png';
+      case 'BCH': return '/logos/bitcoin-cash-bch-logo.png';
       case 'XLM': return '/logos/stellar-xlm-logo.png';
       case 'XTZ': return '/logos/tezos-xtz-logo.png';
       case 'NEAR': return '/logos/near-logo.svg';
-      default: return '/arbitrum-arb-logo.png';
+      default: return '/logos/bitcoin-cash-bch-logo.png';
     }
   };
 
@@ -50,7 +50,7 @@ export const WalletConnect: React.FC = () => {
       case 'SOL': return 'SOL';
       case 'SUI': return 'SUI';
       case 'BNB': return 'BNB';
-      case 'ARB': return 'ARB';
+      case 'BCH': return 'BCH';
       case 'XLM': return 'XLM';
       case 'XTZ': return 'XTZ';
       case 'NEAR': return 'NEAR';

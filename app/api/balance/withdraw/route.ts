@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/client';
 import { ethers } from 'ethers';
-import { transferARBFromTreasury } from '@/lib/bnb/backend-client';
+import { transferBCHFromTreasury } from '@/lib/bnb/backend-client';
 
 interface WithdrawRequest {
   userAddress: string;
@@ -12,7 +12,7 @@ interface WithdrawRequest {
 export async function POST(request: NextRequest) {
   try {
     const body: WithdrawRequest = await request.json();
-    const { userAddress, amount, currency = 'ARB' } = body;
+    const { userAddress, amount, currency = 'BCH' } = body;
 
     // Validate required fields
     if (!userAddress || amount === undefined || amount === null) {
@@ -31,11 +31,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Arbitrum Sepolia only: require EVM address
-    const isARB = ethers.isAddress(userAddress);
-    if (!isARB) {
+    // BCH Testnet only: require EVM address
+    const isBCH = ethers.isAddress(userAddress);
+    if (!isBCH) {
       return NextResponse.json(
-        { error: 'Only Arbitrum Sepolia (EVM) wallets are supported for withdrawals.' },
+        { error: 'Only BCH Testnet (EVM) wallets are supported for withdrawals.' },
         { status: 400 }
       );
     }
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 1. Get house balance and status from Supabase and validate
-    // For Arbitrum Sepolia, support both 'ARB' and 'ETH' (native asset is ETH)
+    // For BCH Testnet, support both 'BCH' and 'ETH' (native asset is BCH)
     let resolvedCurrency = currency;
     let result = await supabase
       .from('user_balances')
@@ -60,8 +60,8 @@ export async function POST(request: NextRequest) {
     let userData = result.data;
     let userError = result.error;
 
-    if ((userError || !userData) && (currency === 'ARB' || currency === 'ETH')) {
-      const fallbackCurrency = currency === 'ARB' ? 'ETH' : 'ARB';
+    if ((userError || !userData) && (currency === 'BCH' || currency === 'ETH')) {
+      const fallbackCurrency = currency === 'BCH' ? 'ETH' : 'BCH';
       const fallback = await supabase
         .from('user_balances')
         .select('balance, status')
@@ -100,10 +100,10 @@ export async function POST(request: NextRequest) {
 
     console.log(`Withdrawal Request: Total=${amount}, Fee=${feeAmount}, Net=${netWithdrawAmount}, Currency=${resolvedCurrency}`);
 
-    // 3. Perform transfer from treasury (Arbitrum Sepolia only)
+    // 3. Perform transfer from treasury (BCH Testnet only)
     let signature: string;
     try {
-      signature = await transferARBFromTreasury(userAddress, netWithdrawAmount);
+      signature = await transferBCHFromTreasury(userAddress, netWithdrawAmount);
     } catch (e: any) {
       console.error('Transfer failed:', e);
       return NextResponse.json({ error: `Withdrawal failed: ${e.message}` }, { status: 500 });
@@ -119,12 +119,12 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Database error in withdrawal update:', error);
-      // Note: At this point the ARB has been sent!
+      // Note: At this point the BCH has been sent!
       return NextResponse.json(
         {
           success: true,
           txHash: signature,
-          warning: 'ARB sent but balance update failed. Please contact support.',
+          warning: 'BCH sent but balance update failed. Please contact support.',
           error: error.message
         },
         { status: 200 }

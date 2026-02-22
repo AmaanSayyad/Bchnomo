@@ -42,7 +42,7 @@ export const BetControls: React.FC<BetControlsProps> = ({
         const state = useStore.getState() as any;
         return state.selectedCurrency || 'SOL';
       }
-      case 'ARB': return 'ETH';
+      case 'BCH': return 'BCH';
       default: return 'BNB';
     }
   }, [network]);
@@ -54,7 +54,7 @@ export const BetControls: React.FC<BetControlsProps> = ({
     switch (network) {
       case 'SUI': return '/logos/usdc.png';
       case 'SOL': return '/logos/solana-sol-logo.png';
-      case 'ARB': return '/logos/ethereum-eth-logo.png';
+      case 'BCH': return '/logos/bitcoin-cash-bch-logo.png';
       case 'BNB': return '/logos/bnb-bnb-logo.png';
       case 'NEAR': return '/logos/near-logo.svg';
       case 'XTZ': return '/logos/tezos-xtz-logo.png';

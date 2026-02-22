@@ -92,7 +92,7 @@ export const LiveChart: React.FC<LiveChartProps> = ({ betAmount, setBetAmount })
         const state = useStore.getState() as any;
         return state.selectedCurrency || 'SOL';
       }
-      case 'ARB': return 'ETH';
+      case 'BCH': return 'ETH';
       default: return 'BNB';
     }
   }, [network]);
@@ -179,7 +179,7 @@ export const LiveChart: React.FC<LiveChartProps> = ({ betAmount, setBetAmount })
 
   // Asset display configuration
   const assetConfig: Record<AssetType, { name: string; symbol: string; pair: string; decimals: number; logo: string; category: 'Crypto' | 'Metals' | 'Forex' | 'Stocks' }> = {
-    ARB: { name: 'Arbitrum', symbol: 'ARB', pair: 'ARB/USD', decimals: 6, logo: '/arbitrum-arb-logo.png', category: 'Crypto' },
+    BCH: { name: 'Bitcoin Cash', symbol: 'BCH', pair: 'BCH/USD', decimals: 2, logo: '/logos/bitcoin-cash-bch-logo.png', category: 'Crypto' },
     BTC: { name: 'Bitcoin', symbol: 'BTC', pair: 'BTC/USD', decimals: 2, logo: '/logos/bitcoin-btc-logo.png', category: 'Crypto' },
     ETH: { name: 'Ethereum', symbol: 'ETH', pair: 'ETH/USD', decimals: 2, logo: '/logos/ethereum-eth-logo.png', category: 'Crypto' },
     SOL: { name: 'Solana', symbol: 'SOL', pair: 'SOL/USD', decimals: 2, logo: '/logos/solana-sol-logo.png', category: 'Crypto' },
@@ -187,7 +187,6 @@ export const LiveChart: React.FC<LiveChartProps> = ({ betAmount, setBetAmount })
     XRP: { name: 'Ripple', symbol: 'XRP', pair: 'XRP/USD', decimals: 4, logo: '/logos/xrp-xrp-logo.png', category: 'Crypto' },
     DOGE: { name: 'Dogecoin', symbol: 'DOGE', pair: 'DOGE/USD', decimals: 5, logo: '/logos/dogecoin-doge-logo.png', category: 'Crypto' },
     ADA: { name: 'Cardano', symbol: 'ADA', pair: 'ADA/USD', decimals: 4, logo: '/logos/cardano-ada-logo.png', category: 'Crypto' },
-    BCH: { name: 'Bitcoin Cash', symbol: 'BCH', pair: 'BCH/USD', decimals: 2, logo: '/logos/bitcoin-cash-bch-logo.png', category: 'Crypto' },
     BNB: { name: 'Binance Coin', symbol: 'BNB', pair: 'BNB/USD', decimals: 2, logo: '/logos/bnb-bnb-logo.png', category: 'Crypto' },
     SUI: { name: 'Sui', symbol: 'SUI', pair: 'SUI/USD', decimals: 3, logo: '/logos/sui-logo.png', category: 'Crypto' },
     XLM: { name: 'Stellar', symbol: 'XLM', pair: 'XLM/USD', decimals: 5, logo: '/logos/stellar-xlm-logo.png', category: 'Crypto' },

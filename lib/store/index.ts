@@ -1,5 +1,5 @@
 /**
-* Main Zustand store for Arbnomo dApp
+* Main Zustand store for Bchnomo dApp
 * Combines wallet, game, and history slices
 * 
 * Note: After migration, blockchain events are handled
@@ -64,7 +64,7 @@ export const initializeStore = async (): Promise<void> => {
     };
 
 
-    console.log("Arbnomo store initialized successfully");
+    console.log("Bchnomo store initialized successfully");
   } catch (error) {
     console.error("Error initializing store:", error);
   }

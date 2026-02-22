@@ -1,8 +1,8 @@
 /**
- * Arbitrum Sepolia Network Configuration
+ * BCH Testnet Network Configuration
  */
 
-export interface ARBConfig {
+export interface BCHConfig {
     network: string;
     rpcEndpoint: string;
     chainId: number;
@@ -10,16 +10,16 @@ export interface ARBConfig {
 }
 
 /**
- * Get Arbitrum Sepolia configuration from environment variables
+ * Get BCH Testnet configuration from environment variables
  */
-export function getARBConfig(): ARBConfig {
-    const network = process.env.NEXT_PUBLIC_ARB_NETWORK || 'testnet';
-    const rpcEndpoint = process.env.NEXT_PUBLIC_ARB_RPC_ENDPOINT || 'https://sepolia-rollup.arbitrum.io/rpc';
-    const chainId = 421614; // Arbitrum Sepolia
-    const treasuryAddress = process.env.NEXT_PUBLIC_ARB_TREASURY_ADDRESS || '';
+export function getBCHConfig(): BCHConfig {
+    const network = process.env.NEXT_PUBLIC_BCH_NETWORK || 'testnet';
+    const rpcEndpoint = process.env.NEXT_PUBLIC_BCH_RPC_ENDPOINT || 'https://rpc-testnet.smartbch.org';
+    const chainId = 10001; // BCH Testnet
+    const treasuryAddress = process.env.NEXT_PUBLIC_BCH_TREASURY_ADDRESS || '';
 
     if (!treasuryAddress) {
-        console.warn('Missing NEXT_PUBLIC_ARB_TREASURY_ADDRESS. Please set it in your .env file.');
+        console.warn('Missing NEXT_PUBLIC_BCH_TREASURY_ADDRESS. Please set it in your .env file.');
     }
 
     return {
@@ -31,4 +31,4 @@ export function getARBConfig(): ARBConfig {
 }
 
 // Keep the old name for compatibility with existing code that imports it
-export const getBNBConfig = getARBConfig;
+export const getBNBConfig = getBCHConfig;

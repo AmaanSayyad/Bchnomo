@@ -32,14 +32,14 @@ export default function ReferralPage() {
         }
     }, [isConnected, address, fetchReferralInfo]);
 
-    // Normalize display: show arbnomo- prefix (legacy DB may have bynomo- or binomo-)
+    // Normalize display: show bchnomo- prefix (legacy DB may have bynomo- or binomo-)
     const displayCode = referralCode
-      ? referralCode.replace(/^bynomo-/, 'arbnomo-').replace(/^binomo-/, 'arbnomo-')
+      ? referralCode.replace(/^bynomo-/, 'bchnomo-').replace(/^binomo-/, 'bchnomo-')
       : null;
 
     useEffect(() => {
         if (displayCode && typeof window !== 'undefined') {
-            setReferralLink(`https://arbnomo.fun/?ref=${displayCode}`);
+            setReferralLink(`https://bchnomo.fun/?ref=${displayCode}`);
         }
     }, [displayCode]);
 
@@ -54,7 +54,7 @@ export default function ReferralPage() {
     };
 
     const shareOnX = () => {
-        const text = encodeURIComponent(`Trade with millisecond precision on @Arbnomo! 🚀\n\nJoin using my referral link and earn rewards:`);
+        const text = encodeURIComponent(`Trade with millisecond precision on @Bchnomo! 🚀\n\nJoin using my referral link and earn rewards:`);
         window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(referralLink)}`, '_blank');
     };
 
@@ -91,7 +91,7 @@ export default function ReferralPage() {
                                 Network <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 text-glow-purple">Referrals</span>
                             </h1>
                             <p className="text-white/30 text-sm font-bold uppercase tracking-widest leading-relaxed max-w-xl">
-                                Expand the ARBNOMO neural network. Earn 10% from every trade made by your referred nodes.
+                                Expand the BCHNOMO neural network. Earn 10% from every trade made by your referred nodes.
                             </p>
                         </div>
                     </motion.div>
@@ -129,7 +129,7 @@ export default function ReferralPage() {
                                             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Referral Link</p>
                                             <div className="flex items-center gap-4">
                                                 <div className="flex-1 truncate text-xs font-mono text-white/40 bg-white/[0.02] border border-white/5 rounded-2xl px-6 py-4">
-                                                    {referralLink || 'ARBNOMO.FUN/?REF=---'}
+                                                    {referralLink || 'BCHNOMO.FUN/?REF=---'}
                                                 </div>
                                                 <button
                                                     onClick={() => copyToClipboard(referralLink, 'Link')}

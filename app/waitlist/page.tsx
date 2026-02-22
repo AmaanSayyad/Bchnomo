@@ -7,17 +7,18 @@ import TrueFocus from '@/components/ui/TrueFocus';
 import HowItWorksDemo from './HowItWorksDemo';
 import { supabase } from '@/lib/supabase/client';
 import './waitlist.css';
+import { useRouter } from 'next/navigation';
 
 const steps = [
     {
         id: "01",
         title: "Hybrid Custody",
-        desc: "Arbitrum Sepolia performance with non-custodial security. ARBNOMO connects your wallet to a high-speed house balance for instant execution without gas lag."
+        desc: "BCH Testnet performance with non-custodial security. BCHNOMO connects your wallet to a high-speed house balance for instant execution without gas lag."
     },
     {
         id: "02",
         title: "Multi-Asset Feed",
-        desc: "Trade more than just crypto. Predict millisecond movements on Bitcoin, ETH, Gold, and Tech giants like NVDA and TSLA via Pyth Fixed Oracles."
+        desc: "Trade more than just crypto. Predict millisecond movements on Bitcoin, BCH, Gold, and Tech giants like NVDA and TSLA via Pyth Fixed Oracles."
     },
     {
         id: "03",
@@ -35,7 +36,7 @@ const testimonials = [
     {
         name: "Astra Vance",
         role: "Venture Strategist",
-        content: "The Blitz Rounds are a game-changer. The millisecond precision from Pyth Oracles makes ARBNOMO feel like a professional CEX but with decentralized peace of mind.",
+        content: "The Blitz Rounds are a game-changer. The millisecond precision from Pyth Oracles makes BCHNOMO feel like a professional CEX but with decentralized peace of mind.",
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop"
     },
     {
@@ -47,19 +48,19 @@ const testimonials = [
     {
         name: "Kai Zen",
         role: "Algo Developer",
-        content: "Migrating to the ARBNOMO protocol was the best move. Instant house balance settlement solves the on-chain latency issue perfectly for high-frequency binary options.",
+        content: "Migrating to the BCHNOMO protocol was the best move. Instant house balance settlement solves the on-chain latency issue perfectly for high-frequency binary options.",
         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop"
     },
     {
         name: "Julian Vane",
         role: "Quant Trader",
-        content: "ARBNOMO's tiered system provides a clear roadmap for traders. The VIP perks and advanced indicators give us a significant edge in these fast-moving rounds.",
+        content: "BCHNOMO's tiered system provides a clear roadmap for traders. The VIP perks and advanced indicators give us a significant edge in these fast-moving rounds.",
         avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop"
     },
     {
         name: "Sarah M.",
         role: "Early Adopter",
-        content: "Switching between Bitcoin and Gold predictions within seconds is what makes ARBNOMO stand out. The multi-asset support is truly elite.",
+        content: "Switching between Bitcoin and Gold predictions within seconds is what makes BCHNOMO stand out. The multi-asset support is truly elite.",
         avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop"
     }
 ];
@@ -67,11 +68,11 @@ const testimonials = [
 const faqs = [
     {
         question: "How does the House Balance work?",
-        answer: "To ensure millisecond execution, ARBNOMO uses a hybrid house balance system. You deposit ETH into a non-custodial treasury on Arbitrum Sepolia, which is then reflected in your game balance for instant off-chain betting."
+        answer: "To ensure millisecond execution, BCHNOMO uses a hybrid house balance system. You deposit BCH into a non-custodial treasury on BCH Testnet, which is then reflected in your game balance for instant off-chain betting."
     },
     {
         question: "What assets can I trade?",
-        answer: "ARBNOMO supports a wide range of assets including major cryptos (BTC, ETH, ARB), precious metals (Gold, Silver), and top-tier stocks (AAPL, NVDA, TSLA) through Pyth price feeds."
+        answer: "BCHNOMO supports a wide range of assets including major cryptos (BTC, BCH, ETH), precious metals (Gold, Silver), and top-tier stocks (AAPL, NVDA, TSLA) through Pyth price feeds."
     },
     {
         question: "What are Blitz Rounds?",
@@ -83,11 +84,12 @@ const faqs = [
     },
     {
         question: "Are my funds safe?",
-        answer: "Yes. All deposits are held in a secure treasury wallet verified on-chain. Withdrawals are processed through the ARBNOMO protocol, ensuring you maintain ultimate control over your assets."
+        answer: "Yes. All deposits are held in a secure treasury wallet verified on-chain. Withdrawals are processed through the BCHNOMO protocol, ensuring you maintain ultimate control over your assets."
     }
 ];
 
 export default function WaitlistPage() {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -122,12 +124,10 @@ export default function WaitlistPage() {
                 .insert([{ email }]);
 
             if (error) {
-                if (error.code === '23505') { // Unique violation
-                    setIsSubmitted(true); // Already on the list
+                if (error.code === '23505') {
+                    setIsSubmitted(true);
                 } else {
                     console.error('Waitlist submission error:', error);
-                    // Standard toast already exists in the app? Let's check.
-                    // For now, let's keep it simple as the original code was also simple.
                 }
             } else {
                 setIsSubmitted(true);
@@ -139,10 +139,8 @@ export default function WaitlistPage() {
         }
     };
 
-    const isExpanded = isHovered || email.length > 0;
-
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    const goToTrade = () => {
+        router.push('/trade');
     };
 
     return (
@@ -163,8 +161,6 @@ export default function WaitlistPage() {
                     noiseIntensity={0.01}
                 />
             </div>
-
-
 
             {/* HERO SECTION */}
             <section id="hero-top" className="min-h-screen flex flex-col justify-center relative overflow-hidden px-4 md:px-20">
@@ -187,7 +183,7 @@ export default function WaitlistPage() {
                             }}
                             className="flex"
                         >
-                            {Array.from("ARBNOMO").map((letter, index) => (
+                            {Array.from("BCHNOMO").map((letter, index) => (
                                 <motion.h1
                                     key={index}
                                     variants={{
@@ -228,7 +224,7 @@ export default function WaitlistPage() {
                             Predict the next tick.
                         </motion.h2>
 
-                        <div className="w-full max-w-md">
+                        <div className="w-full max-w-md space-y-4">
                             {!isSubmitted ? (
                                 <form onSubmit={handleSubmit} className="w-full">
                                     <div
@@ -262,12 +258,23 @@ export default function WaitlistPage() {
                                     <span className="text-xl">✨</span> You're on the list.
                                 </motion.div>
                             )}
+
+                            {/* Trade Now Button */}
+                            <button
+                                onClick={goToTrade}
+                                className="w-full flex items-center justify-center gap-2 px-8 py-3.5 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold uppercase tracking-wider text-sm transition-all duration-200 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50"
+                            >
+                                Start Trading Now
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="m9 18 6-6-6-6" />
+                                </svg>
+                            </button>
                         </div>
                     </motion.div>
 
                 </div>
 
-                {/* Decorative Red Abstract Blur - keeping consistent with the requested style */}
+                {/* Decorative Red Abstract Blur */}
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen opacity-50 block lg:hidden" />
             </section>
 
@@ -381,8 +388,8 @@ export default function WaitlistPage() {
                 >
                     <div className="cta-glow" />
                     <h2 className="cta-title">Ready to trade the future with decentralized precision?</h2>
-                    <button className="cta-button" onClick={scrollToTop}>
-                        Start now
+                    <button className="cta-button" onClick={goToTrade}>
+                        Start Trading
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'translateY(1px)' }}>
                             <path d="m9 18 6-6-6-6" />
                         </svg>
@@ -392,7 +399,7 @@ export default function WaitlistPage() {
 
             {/* FOOTER SECTION */}
             <footer className="py-24 px-10 border-t border-white/5 bg-black relative z-10 w-full overflow-hidden">
-                <div className="huge-footer-logo">ARBNOMO</div>
+                <div className="huge-footer-logo">BCHNOMO</div>
 
                 <div className="footer-meta">
                     <div className="footer-meta-item">2026 © All rights reserved</div>

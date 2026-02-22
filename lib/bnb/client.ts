@@ -1,35 +1,35 @@
 /**
- * Arbitrum Sepolia SDK Integration Module
+ * BCH Testnet SDK Integration Module
  */
 
 import { ethers } from 'ethers';
-import { getARBConfig } from './config';
+import { getBCHConfig } from './config';
 
 // Singleton Provider instance
 let provider: ethers.JsonRpcProvider | null = null;
 
 /**
- * Get or create an Arbitrum Sepolia provider instance
+ * Get or create an BCH Testnet provider instance
  */
-export function getARBProvider(): ethers.JsonRpcProvider {
+export function getBCHProvider(): ethers.JsonRpcProvider {
     if (!provider) {
-        const config = getARBConfig();
+        const config = getBCHConfig();
         provider = new ethers.JsonRpcProvider(config.rpcEndpoint);
     }
     return provider;
 }
 
 /**
- * Get ETH balance for a given address on Arbitrum Sepolia
+ * Get BCH balance for a given address on BCH Testnet
  */
-export async function getARBBalance(address: string): Promise<number> {
-    const provider = getARBProvider();
+export async function getBCHBalance(address: string): Promise<number> {
+    const provider = getBCHProvider();
 
     try {
         const balance = await provider.getBalance(address);
         return parseFloat(ethers.formatEther(balance));
     } catch (error) {
-        console.error('Failed to get ARB ETH balance:', error);
+        console.error('Failed to get BCH BCH balance:', error);
         return 0;
     }
 }
@@ -38,9 +38,9 @@ export async function getARBBalance(address: string): Promise<number> {
  * Get treasury balance
  */
 export async function getTreasuryBalance(): Promise<number> {
-    const config = getARBConfig();
+    const config = getBCHConfig();
     if (!config.treasuryAddress) return 0;
-    return getARBBalance(config.treasuryAddress);
+    return getBCHBalance(config.treasuryAddress);
 }
 
 /**

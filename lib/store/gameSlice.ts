@@ -127,7 +127,7 @@ const DEFAULT_TARGET_CELLS: TargetCell[] = [
 export const createGameSlice: StateCreator<any> = (set: any, get: any) => ({
   // Initial state
   gameMode: 'classic', // Default to classic mode
-  selectedAsset: 'ETH',
+  selectedAsset: 'BCH',
   currentPrice: 0,
   priceHistory: [],
   assetPrices: {},
@@ -370,11 +370,11 @@ export const createGameSlice: StateCreator<any> = (set: any, get: any) => ({
 
       set({ isPlacingBet: true, error: null });
 
-      // Get current network and selected currency from store (match balance API: ARB uses ETH)
+      // Get current network and selected currency from store (match balance API: BCH uses BCH)
       const network = (get() as any).network || 'BNB';
       const selectedCurrency = (get() as any).selectedCurrency;
       let currency = (network === 'SOL' && selectedCurrency) ? selectedCurrency : network;
-      if (network === 'ARB') currency = 'ETH';
+      if (network === 'BCH') currency = 'BCH';
 
       // Call API endpoint to place bet from house balance
       const response = await fetch('/api/balance/bet', {
@@ -628,7 +628,7 @@ export const createGameSlice: StateCreator<any> = (set: any, get: any) => ({
       if (won) playWinSound();
       else playLoseSound();
 
-      const displayCurrency = (resolvedBet.network || network || 'ETH') === 'ARB' ? 'ETH' : (resolvedBet.network || network || 'ETH');
+      const displayCurrency = (resolvedBet.network || network || 'BCH') === 'BCH' ? 'BCH' : (resolvedBet.network || network || 'BCH');
       set({
         activeBets: activeBets.filter((b: ActiveBet) => b.id !== betId),
         settledBets: [settledBet, ...settledBets].slice(0, 50), // Keep last 50
@@ -643,7 +643,7 @@ export const createGameSlice: StateCreator<any> = (set: any, get: any) => ({
         }
       });
 
-      // Handle Balance Update (displayCurrency already normalizes ARB -> ETH)
+      // Handle Balance Update (displayCurrency already normalizes BCH -> BCH)
       if (won) {
         if (accountType === 'real' && address) {
           fetch('/api/balance/win', {

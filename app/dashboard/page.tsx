@@ -85,7 +85,7 @@ export default function AdminDashboard() {
         if (!hash || hash === 'INTERNAL') return null;
         switch (currency.toUpperCase()) {
             case 'BNB': return `https://bscscan.com/tx/${hash}`;
-            case 'NEAR': return `https://nearblocks.io/txns/${hash}`;
+            case 'NEAR': return `https://nebchlocks.io/txns/${hash}`;
             case 'SOL': return `https://solscan.io/tx/${hash}`;
             case 'SUI': return `https://suiscan.xyz/tx/${hash}`;
             case 'XTZ': return `https://tzkt.io/${hash}`;
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
         link.setAttribute("href", url);
-        link.setAttribute("download", `arbnomo_access_codes_${new Date().toISOString().slice(0, 10)}.csv`);
+        link.setAttribute("download", `bchnomo_access_codes_${new Date().toISOString().slice(0, 10)}.csv`);
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();
