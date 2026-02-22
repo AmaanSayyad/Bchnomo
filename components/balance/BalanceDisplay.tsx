@@ -112,7 +112,7 @@ export const BalanceDisplay: React.FC = () => {
 
   // Current symbol for display
   const currentSymbol = network === 'SUI' ? 'USDC'
-    : (network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'BCH' ? 'ETH' : network === 'XLM'
+    : (network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'BCH' ? 'BCH' : network === 'XLM'
       ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB');
 
   return (

@@ -92,7 +92,7 @@ export const LiveChart: React.FC<LiveChartProps> = ({ betAmount, setBetAmount })
         const state = useStore.getState() as any;
         return state.selectedCurrency || 'SOL';
       }
-      case 'BCH': return 'ETH';
+      case 'BCH': return 'BCH';
       default: return 'BNB';
     }
   }, [network]);

@@ -85,9 +85,9 @@ function WalletSync() {
       return;
     }
 
-    // 3. Check BCH (Native via bch-connect or fallback to mainnet-js)
+    // 3. Check BCH (Browser wallet or bch-connect)
     if (preferredNetwork === 'BCH') {
-      // Priority: bch-connect (WalletConnect)
+      // Priority 1: bch-connect (WalletConnect)
       if (bchConnected && bchAddress) {
         if (address !== bchAddress) {
           setAddress(bchAddress);
@@ -96,6 +96,21 @@ function WalletSync() {
           refreshWalletBalance();
           fetchProfile(bchAddress);
           fetchBalance(bchAddress);
+        }
+        return;
+      }
+
+      // Priority 2: Browser wallet (mainnet-js stored locally)
+      const { getSavedWallet } = require('@/lib/bch/browserWallet');
+      const saved = getSavedWallet();
+      if (saved && saved.address) {
+        if (address !== saved.address) {
+          setAddress(saved.address);
+          setIsConnected(true);
+          setNetwork('BCH');
+          refreshWalletBalance();
+          fetchProfile(saved.address);
+          fetchBalance(saved.address);
         }
         return;
       }
@@ -132,6 +147,8 @@ function WalletSync() {
     const hasStellar = state.network === 'XLM' && !!state.address;
     const hasTezos = state.network === 'XTZ' && !!state.address;
     const hasNEAR = state.network === 'NEAR' && !!state.address;
+    const { getSavedWallet: getSaved } = require('@/lib/bch/browserWallet');
+    const hasBrowserWallet = !!getSaved();
 
     // Determine if we should clear
     let shouldClear = false;
@@ -143,7 +160,7 @@ function WalletSync() {
       if (preferredNetwork === 'SOL' && !hasSolana) shouldClear = true;
       else if (preferredNetwork === 'SUI' && !hasSui) shouldClear = true;
       else if (preferredNetwork === 'BNB' && !hasBNB) shouldClear = true;
-      else if (preferredNetwork === 'BCH' && !bchConnected && !address) shouldClear = true;
+      else if (preferredNetwork === 'BCH' && !bchConnected && !hasBrowserWallet && !address) shouldClear = true;
       else if (preferredNetwork === 'XLM' && !hasStellar) shouldClear = true;
       else if (preferredNetwork === 'XTZ' && !hasTezos) shouldClear = true;
       else if (preferredNetwork === 'NEAR' && !hasNEAR) shouldClear = true;
@@ -221,17 +238,23 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'cm7377f0a00gup9u2w4m3v6be';
 
+  const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'fa8caeb40b76a4b42dd7dfa9b5f82ba6';
+
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <ConnectKitProvider mode="dark">
           <BCHConnectProvider
             config={createBCHConfig({
-              appName: 'Bchnomo',
-              appDescription: 'Bchnomo Protocol on Native BCH',
-              appUrl: 'https://bchnomo.com',
-              appIcon: 'https://bchnomo.com/logo.png',
-              walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'dummy-id',
+              projectId: walletConnectProjectId,
+              network: 'testnet',
+              supportLegacyClient: false,
+              metadata: {
+                name: 'Bchnomo',
+                description: 'Bchnomo Protocol on BCH Testnet',
+                url: typeof window !== 'undefined' ? window.location.origin : 'https://bchnomo.com',
+                icons: ['https://cryptologos.cc/logos/bitcoin-cash-bch-logo.png'],
+              },
             })}
           >
             <PrivyProvider

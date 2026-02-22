@@ -3,13 +3,15 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useOverflowStore } from '@/lib/store';
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useDisconnectWallet as useSuiDisconnect } from '@mysten/dapp-kit';
-import { useDisconnect } from 'wagmi';
+import { useDisconnect as useWagmiDisconnect } from 'wagmi';
+import { useWallet as useBCHWallet } from 'bch-connect';
 
 export const WalletConnect: React.FC = () => {
   const { logout: logoutPrivy, authenticated, user, ready } = usePrivy();
   const { disconnect: disconnectSolana, connected: solanaConnected } = useSolanaWallet();
   const { mutate: disconnectSui } = useSuiDisconnect();
-  const { disconnect: disconnectWagmi } = useDisconnect();
+  const { disconnect: disconnectWagmi } = useWagmiDisconnect();
+  const { disconnect: disconnectBCH } = useBCHWallet();
 
   const { network, address, setConnectModalOpen, disconnect: disconnectStore, setPreferredNetwork } = useOverflowStore();
 
@@ -17,9 +19,12 @@ export const WalletConnect: React.FC = () => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   };
 
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
     if (network === 'BNB') logoutPrivy();
-    else if (network === 'BCH') { disconnectWagmi(); }
+    else if (network === 'BCH') {
+      try { await disconnectBCH(); } catch {}
+      // Browser wallet stays in localStorage but session disconnects
+    }
     else if (network === 'SOL') disconnectSolana();
     else if (network === 'SUI') disconnectSui();
     else if (network === 'XLM') {

@@ -24,7 +24,11 @@ export const isValidAddress = async (address: string): Promise<boolean> => {
     if (/^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/.test(address)) return true;
     if (/^[0-9a-fA-F]{64}$/.test(address)) return true;
 
-    // 6. Legacy chain (e.g. Base58) - for backward compatibility
+    // 6. BCH (Native) - supports bitcoincash: and bchtest: / bchreg: / bitcoincash: prefixes
+    if (/^((bitcoincash|bchtest|bchreg|bchreg):)?[qp][a-z0-9]{41}$/i.test(address)) return true;
+    if (/^((bitcoincash|bchtest|bchreg|bchreg):)?[qp][A-Z0-9]{41}$/.test(address)) return true;
+
+    // 7. Legacy chain (e.g. Base58) - for backward compatibility
     try {
         const { PublicKey } = await import('@solana/web3.js');
         const pk = new PublicKey(address);

@@ -39,7 +39,7 @@ export const Leaderboard: React.FC = () => {
             case 'SOL': return 'SOL';
             case 'SUI': return 'USDC';
             case 'BNB': return 'BNB';
-            case 'BCH': return 'ETH';
+            case 'BCH': return 'BCH';
             case 'XLM': return 'XLM';
             case 'XTZ': return 'XTZ';
             case 'NEAR': return 'NEAR';

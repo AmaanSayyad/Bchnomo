@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/client';
-import { ethers } from 'ethers';
-import { transferBCHFromTreasury } from '@/lib/bnb/backend-client';
 
 interface WithdrawRequest {
   userAddress: string;
@@ -14,7 +12,6 @@ export async function POST(request: NextRequest) {
     const body: WithdrawRequest = await request.json();
     const { userAddress, amount, currency = 'BCH' } = body;
 
-    // Validate required fields
     if (!userAddress || amount === undefined || amount === null) {
       return NextResponse.json(
         { error: 'Missing required fields: userAddress, amount' },
@@ -22,20 +19,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate address using utility
     const { isValidAddress } = await import('@/lib/utils/address');
     if (!(await isValidAddress(userAddress))) {
       return NextResponse.json(
         { error: 'Invalid wallet address format' },
-        { status: 400 }
-      );
-    }
-
-    // BCH Testnet only: require EVM address
-    const isBCH = ethers.isAddress(userAddress);
-    if (!isBCH) {
-      return NextResponse.json(
-        { error: 'Only BCH Testnet (EVM) wallets are supported for withdrawals.' },
         { status: 400 }
       );
     }
@@ -47,8 +34,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 1. Get house balance and status from Supabase and validate
-    // For BCH Testnet, support both 'BCH' and 'ETH' (native asset is BCH)
+    // Get house balance from Supabase
     let resolvedCurrency = currency;
     let result = await supabase
       .from('user_balances')
@@ -60,6 +46,7 @@ export async function POST(request: NextRequest) {
     let userData = result.data;
     let userError = result.error;
 
+    // Fallback: try alternate currency key (legacy BCH/ETH compat)
     if ((userError || !userData) && (currency === 'BCH' || currency === 'ETH')) {
       const fallbackCurrency = currency === 'BCH' ? 'ETH' : 'BCH';
       const fallback = await supabase
@@ -93,23 +80,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Insufficient house balance in ${resolvedCurrency}` }, { status: 400 });
     }
 
-    // 2. Apply 2% Treasury Fee
+    // 2% Treasury Fee
     const feePercent = 0.02;
     const feeAmount = amount * feePercent;
     const netWithdrawAmount = amount - feeAmount;
 
-    console.log(`Withdrawal Request: Total=${amount}, Fee=${feeAmount}, Net=${netWithdrawAmount}, Currency=${resolvedCurrency}`);
+    console.log(`Withdrawal: Total=${amount}, Fee=${feeAmount}, Net=${netWithdrawAmount}, Currency=${resolvedCurrency}`);
 
-    // 3. Perform transfer from treasury (BCH Testnet only)
+    // Transfer from treasury using native BCH (mainnet-js)
     let signature: string;
     try {
+      const { transferBCHFromTreasury } = await import('@/lib/bch/treasury');
       signature = await transferBCHFromTreasury(userAddress, netWithdrawAmount);
     } catch (e: any) {
       console.error('Transfer failed:', e);
       return NextResponse.json({ error: `Withdrawal failed: ${e.message}` }, { status: 500 });
     }
 
-    // 3. Update Supabase balance using RPC
+    // Update Supabase balance
     const { data, error } = await supabase.rpc('update_balance_for_withdrawal', {
       p_user_address: userAddress,
       p_withdrawal_amount: amount,
@@ -119,7 +107,6 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Database error in withdrawal update:', error);
-      // Note: At this point the BCH has been sent!
       return NextResponse.json(
         {
           success: true,

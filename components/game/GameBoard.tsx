@@ -72,7 +72,7 @@ export const GameBoard: React.FC = () => {
   const toast = useToast();
 
   // Unified balance and currency
-  const currencySymbol = network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'SUI' ? 'USDC' : network === 'BCH' ? 'ETH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
+  const currencySymbol = network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'SUI' ? 'USDC' : network === 'BCH' ? 'BCH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
   const blitzEntryFee = 0.001;
 
   // Connection and Authorization status (access code requirement removed)

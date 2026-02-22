@@ -61,20 +61,22 @@ export const DepositModal: React.FC<DepositModalProps> = ({
   const toast = useToast();
 
   const selectedCurrency = useOverflowStore(state => state.selectedCurrency);
-  const currencySymbol = network === 'SUI' ? 'USDC' : network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'BCH' ? 'ETH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
+  const currencySymbol = network === 'SUI' ? 'USDC' : network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'BCH' ? 'BCH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
   const networkName = network === 'SUI' ? 'Sui Network' : network === 'SOL' ? 'Solana' : network === 'BCH' ? 'BCH Testnet' : network === 'XLM' ? 'Stellar' : network === 'XTZ' ? 'Tezos' : network === 'NEAR' ? 'NEAR Protocol' : 'BNB Chain';
 
   // Quick select amounts
-  const quickAmounts = network === 'SUI' ? [1, 5, 10, 25] : [0.1, 0.5, 1, 5];
+  const quickAmounts = network === 'SUI' ? [1, 5, 10, 25] : network === 'BCH' ? [0.001, 0.005, 0.01, 0.05] : [0.1, 0.5, 1, 5];
 
-  // Reset state when modal opens/closes
+  // Reset state when modal opens/closes + refresh balance on open
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      refreshWalletBalance();
+    } else {
       setAmount('');
       setError(null);
       setIsLoading(false);
     }
-  }, [isOpen]);
+  }, [isOpen, refreshWalletBalance]);
 
   const validateAmount = (value: string): string | null => {
     if (!value || value.trim() === '') {
@@ -91,7 +93,7 @@ export const DepositModal: React.FC<DepositModalProps> = ({
     }
 
     if (numValue > walletBalance) {
-      return `Insufficient ${currencySymbol} balance`;
+      return `Insufficient ${currencySymbol} balance (have: ${walletBalance.toFixed(8)}, need: ${numValue})`;
     }
 
     return null;
@@ -237,15 +239,23 @@ export const DepositModal: React.FC<DepositModalProps> = ({
         const bchConfig = getNativeBCHConfig();
         if (!bchConfig.treasuryAddress) throw new Error('Native BCH Treasury address not configured');
 
-        if (isBCHConnected) {
-          // WalletConnect (Trust Wallet, etc.)
-          const { Wallet } = await import('mainnet-js');
+        // Check for browser wallet first (direct signing)
+        const { getSavedWallet, sendFromBrowserWallet } = await import('@/lib/bch/browserWallet');
+        const browserWallet = getSavedWallet();
+
+        if (browserWallet) {
+          toast.info('Signing and broadcasting transaction...');
+          txHash = await sendFromBrowserWallet(bchConfig.treasuryAddress, depositAmount);
+        } else if (isBCHConnected) {
+          // Fallback: WalletConnect (Trust Wallet, etc.)
+          const { Wallet, TestNetWallet } = await import('mainnet-js');
           toast.info('Building transaction for WalletConnect...');
 
-          const wallet = await Wallet.watchOnly(address);
-          // Build unsigned transaction hex
+          const WalletClass = address.startsWith('bchtest:') ? TestNetWallet : Wallet;
+          const wallet = await WalletClass.watchOnly(address);
+          const satoshis = BigInt(Math.round(depositAmount * 100_000_000));
           const buildResp = await wallet.send(
-            [{ cashaddr: bchConfig.treasuryAddress, value: depositAmount, unit: 'bch' }],
+            [{ cashaddr: bchConfig.treasuryAddress, value: satoshis }],
             { buildUnsigned: true }
           );
 
@@ -253,8 +263,6 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 
           toast.info('Please confirm the transaction in your mobile wallet...');
 
-          // signTransaction from bch-connect (WalletConnect)
-          // it also broadcasts by default
           const signResp = await signBCHTransaction({
             txRequest: {
               transaction: buildResp.unsignedTransaction,
@@ -265,9 +273,8 @@ export const DepositModal: React.FC<DepositModalProps> = ({
 
           if (!signResp?.signedTransactionHash) throw new Error('Transaction rejected or failed');
           txHash = signResp.signedTransactionHash;
-
         } else {
-          throw new Error('Please connect with Trust Wallet to deposit BCH');
+          throw new Error('Please connect a wallet to deposit BCH');
         }
       } else {
         // Default (EVM/Other)

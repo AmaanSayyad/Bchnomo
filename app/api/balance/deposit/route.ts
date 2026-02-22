@@ -34,40 +34,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate address (BCH Testnet EVM only)
-    let isValid = false;
-
-    // Check if it's a valid EVM address
-    if (ethers.isAddress(userAddress)) {
-      isValid = true;
-    } else if (/^0x[0-9a-fA-F]{64}$/.test(userAddress)) {
-      // Check if it's a valid Sui address
-      isValid = true;
-    } else if (/^(tz1|tz2|tz3|KT1)[a-zA-Z0-9]{33}$/.test(userAddress)) {
-      // Check if it's a valid Tezos address
-      isValid = true;
-    } else {
-      // Check if it's a valid EVM address (BCH Testnet)
-      try {
-        const { PublicKey } = await import('@solana/web3.js');
-        const pk = new PublicKey(userAddress);
-        isValid = pk.toBuffer().length === 32;
-      } catch (e) {
-        // Check if it's a valid Stellar address (starts with G, 56 characters)
-        if (/^G[A-Z2-7]{55}$/.test(userAddress)) {
-          isValid = true;
-        } else if (/^[0-9a-fA-F]{64}$/.test(userAddress) || /^(([a-z\d]+[-_])*[a-z\d]+\.)+[a-z\d]+$/.test(userAddress)) {
-          // Check if it's a valid NEAR address (implicit 64-char hex OR named account ending in .near/.testnet)
-          isValid = true;
-        } else {
-          isValid = false;
-        }
-      }
-    }
+    // Validate address (BCH, EVM, SUI, etc.)
+    const { isValidAddress } = await import('@/lib/utils/address');
+    const isValid = await isValidAddress(userAddress);
 
     if (!isValid) {
       return NextResponse.json(
-        { error: 'Invalid wallet address format. BCH Testnet (EVM) address required.' },
+        { error: 'Invalid wallet address format.' },
         { status: 400 }
       );
     }

@@ -56,7 +56,7 @@ export const MiniHistory: React.FC = () => {
                                                         : `-${parseFloat(bet.amount).toFixed(4)}`}
                                                 </span>
                                                 <span className="text-[8px] text-gray-600 uppercase font-black">
-                                                    {bet.network === 'BCH' ? 'ETH' : (bet.network || 'BNB')}
+                                                    {bet.network === 'BCH' ? 'BCH' : (bet.network || 'BNB')}
                                                 </span>
                                             </div>
                                         </div>
