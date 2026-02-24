@@ -157,14 +157,15 @@ function WalletSync() {
     if (isDemoMode) {
       shouldClear = false;
     } else {
-      if (preferredNetwork === 'SOL' && !hasSolana) shouldClear = true;
-      else if (preferredNetwork === 'SUI' && !hasSui) shouldClear = true;
-      else if (preferredNetwork === 'BNB' && !hasBNB) shouldClear = true;
-      else if (preferredNetwork === 'BCH' && !bchConnected && !hasBrowserWallet && !address) shouldClear = true;
-      else if (preferredNetwork === 'XLM' && !hasStellar) shouldClear = true;
-      else if (preferredNetwork === 'XTZ' && !hasTezos) shouldClear = true;
-      else if (preferredNetwork === 'NEAR' && !hasNEAR) shouldClear = true;
-      else if (!preferredNetwork && !hasBNB && !hasSolana && !hasSui && !hasStellar && !hasTezos && !hasNEAR) shouldClear = true;
+      const pn = preferredNetwork as typeof preferredNetwork | 'BCH';
+      if (pn === 'SOL' && !hasSolana) shouldClear = true;
+      else if (pn === 'SUI' && !hasSui) shouldClear = true;
+      else if (pn === 'BNB' && !hasBNB) shouldClear = true;
+      else if (pn === 'BCH' && !bchConnected && !hasBrowserWallet && !address) shouldClear = true;
+      else if (pn === 'XLM' && !hasStellar) shouldClear = true;
+      else if (pn === 'XTZ' && !hasTezos) shouldClear = true;
+      else if (pn === 'NEAR' && !hasNEAR) shouldClear = true;
+      else if (!pn && !hasBNB && !hasSolana && !hasSui && !hasStellar && !hasTezos && !hasNEAR) shouldClear = true;
     }
 
     if (shouldClear && address !== null) {
