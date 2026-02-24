@@ -73,7 +73,7 @@ export const GameBoard: React.FC = () => {
 
   // Unified balance and currency
   const currencySymbol = network === 'SOL' ? (selectedCurrency || 'SOL') : network === 'SUI' ? 'USDC' : network === 'BCH' ? 'BCH' : network === 'XLM' ? 'XLM' : network === 'XTZ' ? 'XTZ' : network === 'NEAR' ? 'NEAR' : 'BNB';
-  const blitzEntryFee = 0.001;
+  const blitzEntryFee = 0.0001;
 
   // Connection and Authorization status (access code requirement removed)
   const isWalletConnected = !!address;
