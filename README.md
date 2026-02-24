@@ -6,9 +6,6 @@ Running on **BCH Testnet**.
 Powered by **BCH Testnet** + **Pyth Hermes** price attestations + **Supabase** + instant house balance.
 
 *Trade binary options with oracle-bound resolution and minimal trust.*
-
-**Treasury (BCH Testnet):** [`0x83CC763c3D80906B62e79c0b5D9Ab87C3D4D1646`](https://sepolia.arbiscan.io/address/0x83CC763c3D80906B62e79c0b5D9Ab87C3D4D1646)
-
 ---
 
 ## Why Bchnomo?
@@ -70,7 +67,7 @@ Endless possibilities across:
 - **Derivatives & Futures** — More products for advanced traders.
 - **DEX** — Deeper DeFi integration and on-chain liquidity.
 
-**Ultimate objective:** To become the go-to on-chain venue for short-duration, oracle-settled binary options on Arbitrum and beyond.
+**Ultimate objective:** To become the go-to on-chain venue for short-duration, oracle-settled binary options on BCH and beyond.
 
 ---
 
@@ -122,10 +119,10 @@ graph TB
         Pyth["Pyth Hermes Price Feeds"]
     end
 
-    subgraph ArbitrumSepolia["BCH Testnet"]
+    subgraph BCHTestnet["BCH Testnet"]
         UserWallet["User Wallet MetaMask or Privy"]
         Treasury["Bchnomo Treasury BCH EOA"]
-        ArbRPC["Arbitrum RPC"]
+        BchRPC["BCH RPC / node"]
     end
 
     subgraph Backend
@@ -136,8 +133,8 @@ graph TB
     UI --> Store
     UI --> Wallets
     Wallets --> UserWallet
-    UserWallet --> ArbRPC
-    ArbRPC --> Treasury
+    UserWallet --> BchRPC
+    BchRPC --> Treasury
     UI --> Pyth
     UI --> API
     API --> DB
@@ -152,12 +149,12 @@ sequenceDiagram
     participant App as Bchnomo App
     participant P as Pyth Hermes
     participant API as API + Supabase
-    participant Arb as BCH Testnet Treasury
+    participant BCH as BCH Testnet Treasury
 
     U->>App: Connect wallet MetaMask or Privy
     U->>App: Deposit BCH
-    App->>Arb: Transfer BCH to treasury
-    Arb-->>App: Tx confirmed
+    App->>BCH: Transfer BCH to treasury
+    BCH-->>App: Tx confirmed
     App->>API: Credit house balance
 
     loop Betting
@@ -171,8 +168,8 @@ sequenceDiagram
 
     U->>App: Request withdrawal
     App->>API: Debit balance, create payout
-    API->>Arb: Sign and send BCH from treasury to user
-    Arb-->>U: BCH received in wallet
+    API->>BCH: Sign and send BCH from treasury to user
+    BCH-->>U: BCH received in wallet
 ```
 
 ### Game Modes
@@ -230,10 +227,9 @@ Edit `.env` with:
 | `NEXT_PUBLIC_CHART_TIME_WINDOW` | Chart time window in ms (e.g. `300000`) |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
-| `NEXT_PUBLIC_ARB_NETWORK` | `bchTestnet` |
-| `NEXT_PUBLIC_ARB_RPC_ENDPOINT` | BCH Testnet RPC URL |
-| `NEXT_PUBLIC_ARB_TREASURY_ADDRESS` | Treasury address for deposits/withdrawals |
-| `ARB_TREASURY_SECRET_KEY` | Treasury private key (withdrawals; backend only; keep secret) |
+| `NEXT_PUBLIC_BCH_NETWORK` | BCH network (e.g. `chipnet` for testnet) |
+| `NEXT_PUBLIC_BCH_TREASURY_ADDRESS` | BCH treasury address for deposits/withdrawals (e.g. `bchtest:...`) |
+| `BCH_TREASURY_SECRET_KEY` | BCH treasury WIF private key (withdrawals; backend only; keep secret) |
 
 ### 3. Supabase
 
